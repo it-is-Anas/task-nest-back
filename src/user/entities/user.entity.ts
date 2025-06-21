@@ -1,4 +1,3 @@
-
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -17,6 +16,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({ nullable: true, default: null })
+  imgSrc: string;
 
   @Column()
   createdAt: Date;

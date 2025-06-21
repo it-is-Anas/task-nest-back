@@ -8,33 +8,26 @@ import {
   Delete,
   Headers,
   UnauthorizedException,
+  UseGuards,
+  Request,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  private extractUserIdFromToken(authHeader: string): number {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Bearer token is required');
-    }
-    
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-    
-    if (!token || token.trim() === '') {
-      throw new UnauthorizedException('Token cannot be empty');
-    }
-    
-    try {
-      return this.userService.getUserIdFromToken(token);
-    } catch (error) {
-      throw new UnauthorizedException(`Invalid token: ${error.message}`);
-    }
-  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -46,14 +39,56 @@ export class UserController {
     return this.userService.login(loginUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Headers('authorization') authHeader: string) {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Bearer token is required');
-    }
-    
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+  getProfile(@Request() req) {
+    const token = req.headers.authorization.substring(7); // Remove 'Bearer ' prefix
     return this.userService.getProfile(token);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('upload-image')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          cb(null, `${uniqueSuffix}${extname(file.originalname)}`);
+        },
+      }),
+      fileFilter: (req, file, cb) => {
+        // Accept only image files
+
+        if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+          cb(null, true);
+        } else {
+          cb(new Error('Only image files are allowed!'), false);
+        }
+      },
+    }),
+  )
+  async uploadImage(
+    @Request() req,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }), // 5MB
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg|gif)' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const userId = req.user.sub; // Get user ID from JWT payload
+    const imagePath = `/uploads/${file.filename}`; // Path to access the image
+    const result = await this.userService.uploadImage(userId, imagePath);
+    return {
+      message: 'Image uploaded successfully',
+      imagePath: result.user.imgSrc,
+      user: result.user,
+    };
   }
 
   @Get()
@@ -66,17 +101,17 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  @Patch('') 
-  update(@Headers('authorization') authHeader: string, @Body() updateUserDto: UpdateUserDto) {
-    const userId = this.extractUserIdFromToken(authHeader);
+  @UseGuards(JwtAuthGuard)
+  @Patch('')
+  update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
+    const userId = req.user.sub; // Get user ID from JWT payload
     return this.userService.update(userId, updateUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete()
-  remove(@Headers('authorization') authHeader: string) {
-    const userId = this.extractUserIdFromToken(authHeader);
+  remove(@Request() req) {
+    const userId = req.user.sub; // Get user ID from JWT payload
     return this.userService.remove(userId);
   }
-
- 
 }
