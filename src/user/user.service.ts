@@ -15,6 +15,17 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    // Check if user with this email already exists
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createUserDto.email }
+    });
+
+    if (existingUser) {
+      const error = new Error('Email already exists');
+      error['statusCode'] = 409;
+      throw error;
+    }
+
     const user = new User();
     user.firstName = createUserDto.firstName;
     user.lastName = createUserDto.lastName;
