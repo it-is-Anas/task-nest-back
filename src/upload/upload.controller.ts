@@ -40,7 +40,12 @@ export class UploadController {
       }),
       fileFilter: (req, file, callback) => {
         // Add file type validation
-        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+        const allowedMimeTypes = [
+          'image/jpeg',
+          'image/png',
+          'image/gif',
+          'application/pdf',
+        ];
         if (allowedMimeTypes.includes(file.mimetype)) {
           callback(null, true);
         } else {
@@ -67,7 +72,7 @@ export class UploadController {
       }
 
       const userId = this.jwtService.getUserIdFromToken(token);
-      
+
       // Verify user exists
       const user = await this.userRepository.findOne({ where: { id: userId } });
       if (!user) {
@@ -75,8 +80,7 @@ export class UploadController {
       }
       user.imgSrc = file.path;
       await this.userRepository.save(user);
-    
-      
+
       return {
         message: 'File uploaded successfully!',
         filename: file.filename,

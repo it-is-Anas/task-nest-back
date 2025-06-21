@@ -7,6 +7,7 @@ import { User } from './user/entities/user.entity';
 import { UploadController } from './upload/upload.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtService } from './user/jwt.service';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { JwtService } from './user/jwt.service';
       signOptions: { expiresIn: '24h' },
     }),
     UserModule,
+    MessageModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService, JwtService],
