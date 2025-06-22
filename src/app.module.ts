@@ -9,7 +9,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtService } from './user/jwt.service';
 import { MsgModule } from './msg/msg.module';
 import { Msg } from './msg/entities/msg.entity';
-
+import { ProjectModule } from './project/project.module';
+import { Project } from './project/entities/project.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -19,7 +20,7 @@ import { Msg } from './msg/entities/msg.entity';
       username: 'root',
       password: '',
       database: 'task_nest',
-      entities: [User, Msg],
+      entities: [User, Msg, Project],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
@@ -29,6 +30,7 @@ import { Msg } from './msg/entities/msg.entity';
     }),
     UserModule,
     MsgModule,
+    ProjectModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService, JwtService],
