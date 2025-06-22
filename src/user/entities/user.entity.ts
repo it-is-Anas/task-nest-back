@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Msg } from '../../msg/entities/msg.entity';
 
 @Entity()
 export class User {
@@ -19,6 +20,12 @@ export class User {
 
   @Column({ nullable: true, default: null })
   imgSrc: string;
+
+  @OneToMany(() => Msg, (msg) => msg.from)
+  sentMessages: Msg[];
+
+  @OneToMany(() => Msg, (msg) => msg.to)
+  receivedMessages: Msg[];
 
   @Column()
   createdAt: Date;

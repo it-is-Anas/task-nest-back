@@ -7,7 +7,8 @@ import { User } from './user/entities/user.entity';
 import { UploadController } from './upload/upload.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtService } from './user/jwt.service';
-import { MessageModule } from './message/message.module';
+import { MsgModule } from './msg/msg.module';
+import { Msg } from './msg/entities/msg.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { MessageModule } from './message/message.module';
       username: 'root',
       password: '',
       database: 'task_nest',
-      entities: [User],
+      entities: [User, Msg],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
@@ -27,7 +28,7 @@ import { MessageModule } from './message/message.module';
       signOptions: { expiresIn: '24h' },
     }),
     UserModule,
-    MessageModule,
+    MsgModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService, JwtService],
