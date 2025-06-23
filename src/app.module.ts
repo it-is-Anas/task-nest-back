@@ -11,6 +11,9 @@ import { MsgModule } from './msg/msg.module';
 import { Msg } from './msg/entities/msg.entity';
 import { ProjectModule } from './project/project.module';
 import { Project } from './project/entities/project.entity';
+import { TaskModule } from './task/task.module';
+import { Task } from './task/entities/task.entity';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -20,7 +23,7 @@ import { Project } from './project/entities/project.entity';
       username: 'root',
       password: '',
       database: 'task_nest',
-      entities: [User, Msg, Project],
+      entities: [User, Msg, Project, Task],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
@@ -31,6 +34,7 @@ import { Project } from './project/entities/project.entity';
     UserModule,
     MsgModule,
     ProjectModule,
+    TaskModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService, JwtService],
