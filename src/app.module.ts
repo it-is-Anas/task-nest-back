@@ -13,6 +13,8 @@ import { ProjectModule } from './project/project.module';
 import { Project } from './project/entities/project.entity';
 import { TaskModule } from './task/task.module';
 import { Task } from './task/entities/task.entity';
+import { TeamModule } from './team/team.module';
+import { Team } from './team/entities/team.entity';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { Task } from './task/entities/task.entity';
       username: 'root',
       password: '',
       database: 'task_nest',
-      entities: [User, Msg, Project, Task],
+      entities: [User, Msg, Project, Task, Team],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
@@ -35,6 +37,7 @@ import { Task } from './task/entities/task.entity';
     MsgModule,
     ProjectModule,
     TaskModule,
+    TeamModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService, JwtService],
