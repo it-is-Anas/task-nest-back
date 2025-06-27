@@ -6,5 +6,4 @@ export class CreateTeamDto {
 
   @IsNumber()
   project_id: number;
-
 }

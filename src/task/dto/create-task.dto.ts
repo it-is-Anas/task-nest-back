@@ -11,7 +11,6 @@ export class CreateTaskDto {
   @IsNumber()
   assigned_to: number;
 
-
   @IsEnum(TaskPriority)
   @IsOptional()
   priority?: TaskPriority;

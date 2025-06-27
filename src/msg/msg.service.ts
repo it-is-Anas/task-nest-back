@@ -76,7 +76,7 @@ export class MsgService {
       ) latest ON m.\`to\` = latest.receiver_id AND m.createdAt = latest.latest_time
       WHERE m.\`from\` = ?
       ORDER BY m.createdAt DESC`,
-      [userId, userId]
+      [userId, userId],
     );
 
     const reciveChats = await this.msgRepository.query(
@@ -100,29 +100,31 @@ export class MsgService {
       ) latest ON m.\`from\` = latest.sender_id AND m.createdAt = latest.latest_time
       WHERE m.\`to\` = ?
       ORDER BY m.createdAt DESC`,
-      [userId, userId]
+      [userId, userId],
     );
 
     return {
       msg: 'my chats',
-      data: [...chats, ...reciveChats]
+      data: [...chats, ...reciveChats],
     };
   }
 
-  async getMyChat(userId: number,id:number) {
+  async getMyChat(userId: number, id: number) {
     const chats = await this.msgRepository.query(
       `SELECT * FROM msg WHERE \`from\` = ? AND \`to\` = ? ORDER BY id DESC`,
-      [userId,id]
+      [userId, id],
     );
     const chats2 = await this.msgRepository.query(
       `SELECT * FROM msg WHERE \`to\` = ? AND \`from\` = ? ORDER BY id DESC`,
-      [userId,id]
+      [userId, id],
     );
     return [...chats, ...chats2];
   }
 
-  async delivered(userId: number,id:number) {
-    const msg = await this.msgRepository.findOne({ where: { id, to: { id: userId } } });
+  async delivered(userId: number, id: number) {
+    const msg = await this.msgRepository.findOne({
+      where: { id, to: { id: userId } },
+    });
     if (!msg) {
       throw new Error('Message not found');
     }
@@ -131,10 +133,10 @@ export class MsgService {
     return msg;
   }
 
-
-
-  async read(userId: number,id:number) {
-    const msg = await this.msgRepository.findOne({ where: { id, to: { id: userId } } });
+  async read(userId: number, id: number) {
+    const msg = await this.msgRepository.findOne({
+      where: { id, to: { id: userId } },
+    });
     if (!msg) {
       throw new Error('Message not found');
     }
@@ -142,6 +144,4 @@ export class MsgService {
     await this.msgRepository.save(msg);
     return msg;
   }
-  
-  
 }

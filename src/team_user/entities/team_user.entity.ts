@@ -1,38 +1,26 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
 } from 'typeorm';
+import { Team } from '../../team/entities/team.entity';
 import { User } from '../../user/entities/user.entity';
 
-export enum ProjectStatus {
-  DONE = 'done',
-  IN_QUEUE = 'in queue',
-  IN_PROCESS = 'in process',
-}
-
 @Entity()
-export class Project {
+export class TeamUser {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  name: string;
+  @ManyToOne(() => Team, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'team_id' })
+  team: Team;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  owner: User;
-
-  @Column({
-    type: 'enum',
-    enum: ProjectStatus,
-    default: ProjectStatus.IN_QUEUE,
-  })
-  project_status: ProjectStatus;
+  user: User;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -29,10 +29,7 @@ export class MsgController {
   constructor(private readonly msgService: MsgService) {}
 
   @Post()
-  create(
-    @Request() req: RequestWithUser,
-    @Body() createMsgDto: CreateMsgDto,
-  ) {
+  create(@Request() req: RequestWithUser, @Body() createMsgDto: CreateMsgDto) {
     const userId = req.user.sub; // Get user ID from JWT payload
     return this.msgService.create(createMsgDto, userId);
   }
@@ -61,11 +58,9 @@ export class MsgController {
     return this.msgService.delivered(userId, id);
   }
 
-
   @Patch('read/:id')
   read(@Request() req: RequestWithUser, @Param('id') id: number) {
     const userId = req.user.sub;
     return this.msgService.read(userId, id);
   }
-  
 }

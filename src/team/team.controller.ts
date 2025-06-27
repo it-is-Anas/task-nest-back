@@ -1,11 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { TeamService } from './team.service';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { JwtAuthGuard } from '../user/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
-@Controller('team') 
+@Controller('team')
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
@@ -25,7 +35,11 @@ export class TeamController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTeamDto: UpdateTeamDto, @Request() req) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTeamDto: UpdateTeamDto,
+    @Request() req,
+  ) {
     return this.teamService.update(+id, updateTeamDto, req.user.sub);
   }
 

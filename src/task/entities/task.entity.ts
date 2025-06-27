@@ -23,8 +23,7 @@ export class Task {
 
   @Column()
   task: string;
-  
-  
+
   @ManyToOne(() => Project, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'project_id' })
   project: Project;
@@ -44,8 +43,6 @@ export class Task {
   })
   priority: TaskPriority;
 
-
-  
   @Column({ default: false })
   accepted: boolean;
 

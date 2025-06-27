@@ -15,6 +15,8 @@ import { TaskModule } from './task/task.module';
 import { Task } from './task/entities/task.entity';
 import { TeamModule } from './team/team.module';
 import { Team } from './team/entities/team.entity';
+import { TeamUserModule } from './team_user/team_user.module';
+import { TeamUser } from './team_user/entities/team_user.entity';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { Team } from './team/entities/team.entity';
       username: 'root',
       password: '',
       database: 'task_nest',
-      entities: [User, Msg, Project, Task, Team],
+      entities: [User, Msg, Project, Task, Team, TeamUser],
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User]),
@@ -38,6 +40,7 @@ import { Team } from './team/entities/team.entity';
     ProjectModule,
     TaskModule,
     TeamModule,
+    TeamUserModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService, JwtService],
