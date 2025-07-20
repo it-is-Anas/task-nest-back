@@ -31,8 +31,8 @@ export class ProjectController {
   }
 
   @Get()
-  findAll() {
-    return this.projectService.findAll();
+  findAll(@Request() req) {
+    return this.projectService.findAll(req.user.sub);
   }
 
   @Get('my-projects')

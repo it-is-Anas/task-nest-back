@@ -40,8 +40,13 @@ export class ProjectService {
     return this.projectRepository.save(project);
   }
 
-  async findAll(): Promise<Project[]> {
+  async findAll(id: number): Promise<Project[]> {
     return this.projectRepository.find({
+      where: {
+        owner: {
+          id: id,
+        },
+      },
       relations: ['owner'],
     });
   }

@@ -62,9 +62,8 @@ export class TaskService {
       project,
       assignedTo: assignedUser,
       assigner: assignerUser,
-      priority: priority || TaskPriority.NOT_IMP,
+      priority: priority,
     });
-
     return this.taskRepository.save(newTask);
   }
 
