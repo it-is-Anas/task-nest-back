@@ -67,8 +67,13 @@ export class TaskService {
     return this.taskRepository.save(newTask);
   }
 
-  async findAll(): Promise<Task[]> {
+  async findAll(projectId: string): Promise<Task[]> {
     return this.taskRepository.find({
+      where: {
+        project: {
+          id: +projectId,
+        },
+      },
       relations: ['project', 'assignedTo'],
     });
   }

@@ -37,7 +37,7 @@ export class TeamService {
     const team = this.teamRepository.create({ name, project, leader });
     return this.teamRepository.save(team);
   }
-
+ 
   async findAll(): Promise<Team[]> {
     return this.teamRepository.find({ relations: ['project', 'leader'] });
   }
